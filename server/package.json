@@ -1,0 +1,28 @@
+{
+  "name": "netninja-graphql",
+  "version": "1.0.0",
+  "description": "The app built on the NetNinja GraphQL tutorial.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "build": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/david-saint/graphql-netninja-node.git"
+  },
+  "engines": {
+    "node": "11.2.0"
+  },
+  "author": "David Saint",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
