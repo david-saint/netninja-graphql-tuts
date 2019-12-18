@@ -1,10 +1,14 @@
 const express = require('express');
+const graphqlHTTP = require('express-graphql');
+// local requires
+const schema = require('./schema/schema');
 
 const app = express();
 
-// Takes the raw requests and turns them into usable properties on req.body
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// setup graphql
+app.use('/graphql', graphqlHTTP({
+  schema,
+}));
 
 // done! we export it so we can start the server in server.js
 module.exports = app;
