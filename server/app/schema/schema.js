@@ -1,21 +1,45 @@
 const _ = require('lodash');
 const graphql = require('graphql');
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
+const Book = require('../models/book');
+const Author = require('../models/author');
 
-// Dummy data to test out the ish
-const books = [
-  { name: 'Hello World', genre: 'beauty', id: 1 },
-  { name: 'The Final Empire', genre: 'Fantasy', id: 2 },
-  { name: 'The Long Lost Earth', genre: 'Sci-Fi', id: 3 },
-];
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLSchema,
+  GraphQLList,
+  GraphQLInt,
+  GraphQLID,
+} = graphql;
+
+const AuthorType = new GraphQLObjectType({
+  name: 'Author',
+  fields: () => ({
+    id: { type: GraphQLID },
+    age: { type: GraphQLInt },
+    name: { type: GraphQLString },
+    books: {
+      type: new GraphQLList(BookType), // eslint-disable-line
+      resolve(parent) {
+        return _.filter(books, { authorId: parent.id });
+      },
+    },
+  }),
+});
 
 const BookType = new GraphQLObjectType({
-  namae: 'Book',
+  name: 'Book',
   fields: () => ({
-    id: { type: GraphQLString },
+    id: { type: GraphQLID },
     name: { type: GraphQLString },
     genre: { type: GraphQLString },
+    author: {
+      type: AuthorType,
+      resolve(parent) {
+        return _.find(authors, { id: parent.authorId });
+      },
+    },
   }),
 });
 
@@ -24,9 +48,28 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     book: { // this is the identify for a single book query
       type: BookType,
-      args: { id: { type: GraphQLString } }, // this means thet when you query for book, you have to specify id
+      args: { id: { type: GraphQLID } }, // this means thet when you query for book, you have to specify id
       resolve(parent, args) { // this is how we determine how to retrieve data from datasource
         return _.find(books, { id: args.id });
+      },
+    },
+    author: { // this is the identify for a single book query
+      type: AuthorType,
+      args: { id: { type: GraphQLID } }, // this means thet when you query for book, you have to specify id
+      resolve(parent, args) { // this is how we determine how to retrieve data from datasource
+        return _.find(authors, { id: args.id });
+      },
+    },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve() {
+        return books;
+      },
+    },
+    authors: {
+      type: new GraphQLList(AuthorType),
+      resolve() {
+        return authors;
       },
     },
   },
